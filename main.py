@@ -61,5 +61,22 @@ for shape in slide.Shapes:
 
         draw_line(matrix, row1, col1, row2, col2)
 
+    if shape.Type == 1: # msoRectangle shape type
+        x1, y1 = shape.Left, shape.Top
+        x2, y2 = x1 + shape.Width, y1 + shape.Height
+
+        row1, col1 = to_matrix_coords(x1, y1)
+        row2, col2 = to_matrix_coords(x2, y2)
+
+        # Draw top edge
+        draw_line(matrix, row1, col1, row1, col2)
+        # Draw bottom edge
+        draw_line(matrix, row2, col1, row2, col2)
+        # Draw left edge
+        draw_line(matrix, row1, col1, row2, col1)
+        # Draw right edge
+        draw_line(matrix, row1, col2, row2, col2)
+
+
 for row in matrix:
     print("".join(str(cell) for cell in row))
