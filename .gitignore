@@ -1,1 +1,10 @@
+# environment files and folders
 .venv/
+**/__pycache__
+.env
+
+
+# project files amd folders
+logs.txt
+**.pptm
+**.ppsx

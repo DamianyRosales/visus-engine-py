@@ -1,9 +1,9 @@
-import win32com.client
+from COM.com_client import Client
 
-app = win32com.client.Dispatch("PowerPoint.Application")
-app.Visible = True
+com_instance = Client()
+powerpoint = com_instance.get_app()
 
-presentation = app.ActivePresentation
+presentation = powerpoint.ActivePresentation
 slide = presentation.Slides(2)
 
 for shape in slide.Shapes:
