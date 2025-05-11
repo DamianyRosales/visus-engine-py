@@ -1,3 +1,3 @@
-__all__ = ["com_client"]
+from .com_client import Client
 
-from . import com_client
+__all__ = ["Client"]

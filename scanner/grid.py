@@ -1,12 +1,14 @@
 from COM.com_client import Client
 from utils import logger as log
 
+COM_CLIENT = Client()
+ppt_instance = COM_CLIENT.get_app()
+
 class Grid:
     
     def __init__(self, slide_index):
         self.slide_index = slide_index
-        self.__powerpoint_instance = Client()
-        self.__app = self.__powerpoint_instance.get_app()
+        self.__app = ppt_instance
         self.slide = self.__app.ActivePresentation.Slides(self.slide_index)
         self.limits = self.__collect_limits()
         self.min_x = self.limits["limit3"].Left
@@ -49,14 +51,14 @@ class Grid:
             log.error(f"Failed during to_matrix_coords()", error)
     
     # Function to draw line in matrix
-    def __draw_line(self, row1, col1, row2, col2):
+    def __draw_line(self, row1, col1, row2, col2, shape_name):
         try:
             steps = max(abs(row2 - row1), abs(col2 - col1))
             for i in range(steps + 1):
                 r = int(row1 + (row2 - row1) * i / steps)
                 c = int(col1 + (col2 - col1) * i / steps)
                 if 0 <= r < self.rows and 0 <= c < self.cols:
-                    self.matrix[r][c] = 1
+                    self.matrix[r][c] = str(shape_name)
         except Exception as error:
             log.error(f"Failed to draw line in the matrix", error)
 
@@ -70,7 +72,7 @@ class Grid:
                     row1, col1 = self.to_matrix_coords(x1, y1)
                     row2, col2 = self.to_matrix_coords(x2, y2)
 
-                    self.__draw_line(row1, col1, row2, col2)
+                    self.__draw_line(row1, col1, row2, col2, shape.Name)
 
                 if shape.Type == 1: # msoRectangle shape type
                     x1, y1 = shape.Left, shape.Top
@@ -80,13 +82,13 @@ class Grid:
                     row2, col2 = self.to_matrix_coords(x2, y2)
 
                     # Draw top edge
-                    self.__draw_line(row1, col1, row1, col2)
+                    self.__draw_line(row1, col1, row1, col2, shape.Name)
                     # Draw bottom edge
-                    self.__draw_line(row2, col1, row2, col2)
+                    self.__draw_line(row2, col1, row2, col2, shape.Name)
                     # Draw left edge
-                    self.__draw_line(row1, col1, row2, col1)
+                    self.__draw_line(row1, col1, row2, col1, shape.Name)
                     # Draw right edge
-                    self.__draw_line(row1, col2, row2, col2)
+                    self.__draw_line(row1, col2, row2, col2, shape.Name)
         except Exception as error:
             log.error(f"Failed to update matrix", error)
 
