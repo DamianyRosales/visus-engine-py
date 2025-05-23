@@ -2,7 +2,7 @@ from game import Game
 from scanner import Grid
 from entities import Player
 import math
-
+from collections import defaultdict
 game = Game()
 
 ### game settings ###
@@ -14,17 +14,23 @@ game.Slides.set_render_slide(2) #sets the slide where the level design will be r
 level = Grid(game.Slides.level_slide) # generates a new matrix for the level
 level.update_matrix()
 
-
-player = Player("player-name")
-player_x, player_y = 2, 2
+player = Player()
+player_x, player_y = 13, 2
+level.set_value(player_x, player_y, "p")
+direction = math.radians(0)
 fov = math.radians(90)
-direction = math.radians(90) # facing down
 
-level.matrix[player_x][player_y] = "p"
-level.log_matrix()
+ray_data = Game.Render.cast_all_rays(level.matrix, player_x, player_y, direction, fov, 60)
 
-hits = game.Render.cast_all_rays(level.matrix, player_x, player_y, direction, fov=fov, num_rays=60)
-print(hits)
+wall_rotations = {}
+
+angles=[]
+for i in ray_data:
+    if i[3] == "limit0":
+        angles.append(i[4])
+
+avg_angles = math.degrees(sum(angles) / len(angles))
+print(avg_angles)
 
 game.loop = False
 while(game.loop):

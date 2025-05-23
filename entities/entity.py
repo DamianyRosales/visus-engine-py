@@ -3,13 +3,14 @@ from utils import logger as log
 class Entity:
     
     def __init__(self,
-        position=[0,0], 
+        position_x=0, 
+        position_y=0,
         max_health=100, 
         current_health=100,
     ):
-        
         self.id = id(self)
-        self.position = position
+        self.position_x = position_x
+        self.position_y = position_y
         self.speed = 1
         self.max_health = max_health
         self.current_health = current_health

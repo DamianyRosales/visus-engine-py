@@ -18,6 +18,7 @@ class Grid:
         self.cols = int(self.max_x - self.min_x)
         self.rows = int(self.max_y - self.min_y)
         self.matrix = self.define_matrix(self.cols, self.rows)
+        self.matrix_display = self.define_matrix(self.cols, self.rows)
 
     # Collect the limits
     def __collect_limits(self):
@@ -58,7 +59,8 @@ class Grid:
                 r = int(row1 + (row2 - row1) * i / steps)
                 c = int(col1 + (col2 - col1) * i / steps)
                 if 0 <= r < self.rows and 0 <= c < self.cols:
-                    self.matrix[r][c] = str(shape_name)
+                    self.matrix[r][c] = shape_name
+                    self.matrix_display[r][c] = 1
         except Exception as error:
             log.error(f"Failed to draw line in the matrix", error)
 
@@ -92,9 +94,15 @@ class Grid:
         except Exception as error:
             log.error(f"Failed to update matrix", error)
 
-    def log_matrix(self):
+    def set_value(self, x, y, value):
+        self.matrix[y][x] = value
+        self.matrix_display[y][x] = value
+    
+    def log_matrix(self, full: bool):
         try:
-            for row in self.matrix:
+            matrix = self.matrix_display
+            if full: matrix = self.matrix
+            for row in matrix:
                 print("".join(str(cell) for cell in row))
         except Exception as error:
             log.error(f"Failed to log matrix", error)

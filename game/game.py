@@ -41,7 +41,7 @@ class Game:
                 if 0 <= row < len(matrix) and 0 <= col < len(matrix[0]):
                     cell = matrix[row][col]
                     if cell != 0 and cell != "p":
-                        return (ray_x, ray_y, distance, matrix[row][col])
+                        return (ray_x, ray_y, distance, matrix[row][col], angle)
                 else:
                     break  # Out of bounds
 
@@ -64,42 +64,7 @@ class Game:
             for i in range(num_rays):
                 angle = start_angle + (i / num_rays) * fov
                 hit = Game.Render.raycast(matrix, player_x, player_y, angle)
-                if hit[3] not in hits: hits.append(hit[3])
+                hits.append(hit)
+                #if hit[3] not in hits: hits.append(hit[3])
             
-            return hits
-        
-        def cast_rays(matrix, player_x, player_y, player_angle_deg, fov_deg, num_rays):
-            hits = []
-            half_fov = fov_deg / 2
-            angle_step = fov_deg / num_rays
-
-            for i in range(num_rays):
-                ray_angle = math.radians(player_angle_deg - half_fov + i * angle_step)
-                dx = math.cos(ray_angle)
-                dy = math.sin(ray_angle)
-
-                x, y = player_x, player_y
-
-                for step in range(100):  # max steps for ray
-                    x += dx * 0.1
-                    y += dy * 0.1
-
-                    row = int(y)
-                    col = int(x)
-
-                    # Bounds check
-                    if 0 <= row < len(matrix) and 0 <= col < len(matrix[0]):
-                        cell = matrix[row][col]
-                        if cell != 0:  # Could be a string like "wall0"
-                            hits.append({
-                                "ray": i,
-                                "row": row,
-                                "col": col,
-                                "hit_name": cell,
-                                "distance": math.sqrt((x - player_x)**2 + (y - player_y)**2)
-                            })
-                            break
-                    else:
-                        break  # Out of bounds
-
             return hits
